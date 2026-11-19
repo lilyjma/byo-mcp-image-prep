@@ -1,0 +1,31 @@
+name: Check skill and local helper
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build standard-library tests
+        run: docker build -f tests/Dockerfile -t byo-mcp-prep-tests .
+      - name: Run without external network access
+        run: docker run --rm --network none byo-mcp-prep-tests
+      - name: Build pinned synthetic bridge
+        run: docker build -f tests/fixtures/Dockerfile.bridge -t byo-mcp-prep-bridge-fixture .
+      - name: Verify bridge sessions with synthetic tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          cleanup() {
+            docker rm -f byoi-ci-bridge >/dev/null 2>&1 || true
+            docker network rm byoi-ci-net >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          docker network create --internal byoi-ci-net
+          docker run -d --name byoi-ci-bridge --network byoi-ci-net --network-alias bridge byo-mcp-prep-bridge-fixture
+          docker run --rm --network byoi-ci-net --entrypoint python byo-mcp-prep-tests /tests/check_bridge.py --url http://bridge:8080/mcp --synthetic-fixture-approved

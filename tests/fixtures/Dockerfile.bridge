@@ -1,0 +1,4 @@
+FROM docker.io/supercorp/supergateway@sha256:5fd78fb79ffce27812313e5da9b3b3d0bc034267e131961f1140f4a4e0179d3a
+COPY tests/fixtures/stdio.js /fixtures/stdio.mjs
+ENTRYPOINT ["supergateway", "--stdio", "node /fixtures/stdio.mjs", "--outputTransport", "streamableHttp", "--stateful", "--host", "0.0.0.0", "--port", "8080", "--streamableHttpPath", "/mcp"]
+CMD []
