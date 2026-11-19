@@ -1,7 +1,11 @@
 # BYO MCP image preparation
 
-An AI skill that helps prepare an MCP container image for Azure Connector
-Namespace bring-your-own-image (BYOI) hosting.
+An AI skill that helps prepare an MCP container image for
+[Azure Connector Namespace](https://connectors.azure.com/) bring-your-own-image
+(BYOI) hosting.
+
+See the [hosted MCP quickstart](https://learn.microsoft.com/en-us/azure/connector-namespace/hosted-mcp-quickstart?pivots=playwright)
+for hosting an MCP server in Connector Namespace.
 
 Give your coding assistant an image reference. It inspects the image, runs local
 checks, explains gaps, and asks you to approve a change plan. It can then build
